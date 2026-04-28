@@ -1,0 +1,13 @@
+langchain
+ipykernel
+langchain-community
+langgraph
+pinecone
+tavily-python
+streamlit
+python-dotenv
+langchain_ollama
+torchvision
+langchain_huggingface
+langchain_groq
+sentence-transformers
