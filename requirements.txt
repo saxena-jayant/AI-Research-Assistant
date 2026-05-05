@@ -1,8 +1,8 @@
-langchain
+langchain==1.2.15
 ipykernel
 langchain-community
-langgraph
-pinecone
+langgraph==1.1.8
+pinecone==8.1.2
 tavily-python
 streamlit
 python-dotenv
@@ -10,6 +10,6 @@ langchain_ollama
 torchvision
 langchain_huggingface
 langchain_groq
-sentence-transformers
+sentence-transformers==5.4.1
 mmh3
-pinecone-text
+pinecone-text==0.11.0
