@@ -1,5 +1,6 @@
 import os
 from pinecone import Pinecone, ServerlessSpec
+from pinecone_text.sparse import BM25Encoder
 from dotenv import load_dotenv
 from .embeddings import get_embeddings_model
 import uuid
@@ -7,6 +8,7 @@ import uuid
 load_dotenv()
 
 get_embedding = get_embeddings_model()
+bm25 = BM25Encoder().default()
 
 
 class PineconeManager:
@@ -19,7 +21,7 @@ class PineconeManager:
             self.pc.create_index(
                 name=self.index_name,
                 dimension=384,
-                metric="cosine",
+                metric="dotproduct",
                 spec=ServerlessSpec(cloud="aws", region="us-east-1"),
             )
 
@@ -27,21 +29,28 @@ class PineconeManager:
 
     def upsert_document(self, text: str, metadata: dict):
         vector = get_embedding.embed_query(text)
+        sparse_vector = bm25.encode_documents(text)
         doc_id = str(uuid.uuid4())
         self.index.upsert(
             vectors=[
                 {
                     "id": doc_id,
                     "values": vector,
+                    "sparse_values": sparse_vector,
                     "metadata": metadata,
                 }
             ]
         )
 
-    def query_documents(self, query_text: str, top_k=3):
+    def query_documents(self, query_text: str, top_k=3, alpha=0.5):
         query_vector = get_embedding.embed_query(query_text)
+        sparse_vector = bm25.encode_documents(query_text)
         results = self.index.query(
-            vector=query_vector, top_k=top_k, include_metadata=True
+            vector=query_vector,
+            sparse_vector=sparse_vector,
+            top_k=top_k,
+            include_metadata=True,
+            alpha=alpha,
         )
         return [
             {"score": result.score, **result.metadata} for result in results.matches

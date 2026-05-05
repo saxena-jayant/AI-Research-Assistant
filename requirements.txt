@@ -11,3 +11,5 @@ torchvision
 langchain_huggingface
 langchain_groq
 sentence-transformers
+mmh3
+pinecone-text

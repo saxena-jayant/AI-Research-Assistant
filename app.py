@@ -9,7 +9,7 @@ if st.button("Research"):
     if query:
         with st.spinner("Thinking..."):
             graph = build_graph()
-            inputs = {"query": query}
+            inputs = {"query": query, "retry_count": 0, "refined_query": ""}
             outputs = graph.invoke(inputs)
             st.write("### Final summary:")
             st.success(outputs["summary"])
